@@ -1,5 +1,6 @@
 package stoletheshow.model
 {
+	import flash.display.BitmapData;
 	import flash.events.ActivityEvent;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -9,8 +10,8 @@ package stoletheshow.model
 	import flash.system.Capabilities;
 	import flash.system.Security;
 	import flash.system.SecurityPanel;
-	import stoletheshow.control.Disposable;
 
+	import stoletheshow.control.Disposable;
 
 	/**
 	 * Checks for a users camera. Tested for the Web and AIR for Android.
@@ -23,7 +24,8 @@ package stoletheshow.model
 		public static var CAMERA_UNAVAILABLE:String = "camera_unavailable";
 		protected var _camera:Camera;
 		protected var _video:Video;
-		protected var _isUnmuted:Boolean = false, _isActivated:Boolean = false;
+		protected var _hasChosenCamera:Boolean = false;
+		protected var _bitmapData:BitmapData;
 
 		public function CameraFeed()
 		{
@@ -31,9 +33,12 @@ package stoletheshow.model
 
 		public function start(width:int, height:int, fps:int = 30, bandwidth:int = 0, quality:int = 100):void
 		{
-			if (Camera.names.length > 1)
+			_bitmapData = new BitmapData(width, height, false, 0xFFFFFF);
+			
+			if (!_hasChosenCamera && Camera.names.length > 1)
 			{
 				Security.showSettings(SecurityPanel.CAMERA);
+				_hasChosenCamera = true;
 			}
 
 			_camera = Camera.getCamera();
@@ -56,6 +61,13 @@ package stoletheshow.model
 		public function stop():void
 		{
 			_video.attachCamera(null);
+		}
+
+		public function dispose():void
+		{
+			_video.attachCamera(null);
+			_video.clear();
+			_video = null;
 		}
 
 		/* ------------------------------------------------------------------------------- */
@@ -85,6 +97,9 @@ package stoletheshow.model
 			}
 		}
 
+		/* ------------------------------------------------------------------------------- */
+		/*  Getters and setters */
+		/* ------------------------------------------------------------------------------- */
 		public function get camera():Camera
 		{
 			return _camera;
@@ -100,11 +115,10 @@ package stoletheshow.model
 			return Camera.isSupported && !Capabilities.avHardwareDisable;
 		}
 
-		public function dispose():void
+		public function get bitmapData():BitmapData
 		{
-			_video.attachCamera(null);
-			_video.clear();
-			_video = null;
+			_bitmapData.draw(video);
+			return _bitmapData;
 		}
 	}
 }

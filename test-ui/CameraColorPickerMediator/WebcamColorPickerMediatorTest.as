@@ -5,6 +5,7 @@
 	import flash.display.SimpleButton;
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.text.TextField;
 
 	/**
 	 * @author Nicolas Zanotti
@@ -13,9 +14,9 @@
 	{
 		protected var mediator:CameraColorPickerMediator;
 		public var videoContainer:Sprite;
-		public var previewContainer:Sprite;
 		public var btStart:SimpleButton;
 		public var btStop:SimpleButton;
+		public var colorValue:TextField;
 
 		public function WebcamColorPickerMediatorTest()
 		{
@@ -24,7 +25,7 @@
 
 		private function onComplete(event:Event):void
 		{
-			mediator = new CameraColorPickerMediator(videoContainer, previewContainer, btStart, btStop);
+			mediator = new CameraColorPickerMediator(videoContainer, btStart, btStop).withColorValueDisplay(colorValue);
 		}
 	}
 }

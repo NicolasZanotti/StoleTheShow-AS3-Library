@@ -15,7 +15,7 @@ package stoletheshow.model
 		public function Color(hex:*)
 		{
 			_colorTransform = new ColorTransform();
-			_colorTransform.color = hex;
+			value = hex;
 		}
 
 		/**
@@ -24,6 +24,11 @@ package stoletheshow.model
 		public function get value():uint
 		{
 			return _colorTransform.color;
+		}
+
+		public function set value(hex:*):void
+		{
+			_colorTransform.color = hex;
 		}
 
 		/**

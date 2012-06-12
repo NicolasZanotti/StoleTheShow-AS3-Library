@@ -10,3 +10,7 @@ Download the *stoletheshow_library.swc* located in the bin directory and include
 Demos
 -----
 The *test-ui* folder contains tests for visual components such as mediators and loaders.
+
+Flash Pro Commands
+------------------
+To install, copy the jsfl files to your local commands folder.
