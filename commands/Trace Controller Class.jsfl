@@ -254,7 +254,7 @@ function generateButtonEventHandlersCode(instanceNames)
 		if (isButton(instanceNames[prop].type)) 
 		{
 			name = generateEventHandlerName(instanceNames[prop].name, "click");
-			code += t + t + "private function " + name + "(event:MouseEvent):void" + n;
+			code += t + t + "protected function " + name + "(event:MouseEvent):void" + n;
 			code += t + t + "{" + n;
 			code += t + t + t + "event.stopPropagation();" + n;
 			code += t + t + t + "trace(\"" + instanceNames[prop].name + " clicked\");" + n;
@@ -278,7 +278,7 @@ function generateLoaderEventHandlersCode(instanceNames)
 		if (instanceNames[prop].type == "UILoader") 
 		{
 			name = generateEventHandlerName(instanceNames[prop].name, "complete");
-			code += t + t + "private function " + name + "(event:Event):void" + n;
+			code += t + t + "protected function " + name + "(event:Event):void" + n;
 			code += t + t + "{" + n;
 			code += t + t + t + "event.stopPropagation();" + n;
 			code += t + t + t + "trace(\"" + instanceNames[prop].name + " complete\");" + n;
@@ -286,7 +286,7 @@ function generateLoaderEventHandlersCode(instanceNames)
 			code += n;
 			
 			name = generateEventHandlerName(instanceNames[prop].name, "error");
-			code += t + t + "private function " + name + "(event:IOErrorEvent):void" + n;
+			code += t + t + "protected function " + name + "(event:IOErrorEvent):void" + n;
 			code += t + t + "{" + n;
 			code += t + t + t + "event.stopPropagation();" + n;
 			code += t + t + t + "trace(\"" + instanceNames[prop].name + " error\");" + n;

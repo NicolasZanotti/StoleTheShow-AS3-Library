@@ -1,5 +1,7 @@
-package  
+package
 {
+	import flash.utils.setTimeout;
+
 	import stoletheshow.control.Controllable;
 	import stoletheshow.control.Controller;
 
@@ -15,34 +17,54 @@ package
 	{
 		public var ct:Controller;
 		public var bt:SimpleButton;
+		public var btLock:SimpleButton;
 		private var _tickCounter:uint = 0;
 
-		public function Widget() 
+		public function Widget()
 		{
 			ct = new Controller(this);
 		}
 
-		private function onBtClick(event:Event):void 
-		{
-			trace("Widget: onBtClick()");
-		}
-
-		private function onStageEnterFrame(event:Event):void 
-		{
-			trace(_tickCounter++);
-		}
-
+		/* ------------------------------------------------------------------------------- */
+		/*  Controller methods */
+		/* ------------------------------------------------------------------------------- */
 		public function init():void
 		{
 			// add listeners
 			ct.events.add(bt, MouseEvent.CLICK, onBtClick);
-			ct.events.add(stage, Event.ENTER_FRAME, onStageEnterFrame);
+			ct.events.add(btLock, MouseEvent.CLICK, onBtLockClick);
+			ct.events.add(this, Event.ENTER_FRAME, onStageEnterFrame);
 		}
 
 		public function dispose():void
 		{
 			trace("Widget: dispose()");
 			ct = null;
+		}
+
+		/* ------------------------------------------------------------------------------- */
+		/*  Event handlers */
+		/* ------------------------------------------------------------------------------- */
+		private function onBtClick(event:Event):void
+		{
+			trace("Widget: onBtClick()");
+		}
+
+		private function onStageEnterFrame(event:Event):void
+		{
+			trace(_tickCounter++);
+		}
+
+		private function onBtLockClick(event:MouseEvent):void
+		{
+			ct.locked = true;
+
+			setTimeout(onUnlock, 2000);
+		}
+
+		private function onUnlock():void
+		{
+			ct.locked = false;
 		}
 	}
 }

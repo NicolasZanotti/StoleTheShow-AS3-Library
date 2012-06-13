@@ -14,9 +14,12 @@ package stoletheshow.control
 	 */
 	public class Controller
 	{
+		public static var INTERFACE_LOCK:String = "interface_lock";
+		public static var INTERFACE_UNLOCK:String = "interface_unlock";
 		protected var _owner:Controllable;
 		protected var _hasEvents:Boolean = false;
 		protected var _events:Events;
+		protected var _isLocked:Boolean = false;
 
 		public function Controller(owner:Controllable)
 		{
@@ -25,10 +28,13 @@ package stoletheshow.control
 			_owner.addEventListener(Event.REMOVED_FROM_STAGE, onRemoved, false, 0, true);
 		}
 
+		/* ------------------------------------------------------------------------------- */
+		/*  Event Handlers */
+		/* ------------------------------------------------------------------------------- */
 		protected function onAdded(e:Event):void
 		{
 			e.stopPropagation();
-			
+
 			_owner.removeEventListener(Event.ADDED_TO_STAGE, onAdded, false);
 			_owner.init();
 		}
@@ -59,6 +65,9 @@ package stoletheshow.control
 			_owner = null;
 		}
 
+		/* ------------------------------------------------------------------------------- */
+		/*  Getters and setters */
+		/* ------------------------------------------------------------------------------- */
 		public function get events():Events
 		{
 			if (!_hasEvents)
@@ -68,6 +77,23 @@ package stoletheshow.control
 			}
 
 			return _events;
+		}
+		
+		/**
+		 * Block interaction with the interface. For instance when a form is being submitted.
+		 */
+		public function set locked(isLocked:Boolean):void
+		{
+			_isLocked = isLocked;
+			
+			// TODO cover owner with clickEater
+			
+			_owner.root.stage.dispatchEvent(new Event(_isLocked ? INTERFACE_LOCK : INTERFACE_UNLOCK));
+		}
+
+		public function get locked():Boolean
+		{
+			return _isLocked;
 		}
 	}
 }
