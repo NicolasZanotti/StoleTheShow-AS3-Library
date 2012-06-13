@@ -19,17 +19,24 @@ package stoletheshow.display
 	 *		addChild(bitmapAnimation);
 	 * </pre>
 	 * 
-	 * @author Nicolas Zanotti
+	 * @author Nicolas Schudel
 	 * @langversion 3.0
 	 * @playerversion Flash 9
 	 * @param Array containing BitmapData
+	 * @version 20090612 Initial version named VideoClip. Created at Maxomedia, www.maxomedia.com
+	 * @version 20091105 Fixed a bug where the video is not updated when a bitmap sequence is passed in the constructor.
+	 * @version 20091115 Added dispose method.
+	 * @version 20100410 By Yu-Chung Chen. Added totalFrames and currentFrame getters. play() updates the _index so currentFrame works properly.
 	 */
 	public class BitmapAnimation extends Sprite
 	{
-		protected var _bitmapDatas:Array, _filters:Array;
-		protected var _index:int = -1, _bitmapDatasLength:int;
-		protected var _isPlaying:Boolean = false;
-		public var bitmap:Bitmap = new Bitmap();
+		protected var	_bitmapDatas:Array, 
+						_filters:Array, 
+						_index:int = -1, 
+						_bitmapDatasLength:int,
+						_isAnimating:Boolean = false,
+						_isStoped:Boolean = false;
+		public var		bitmap:Bitmap = new Bitmap();
 
 		public function BitmapAnimation(bitmapDatas:Array = null)
 		{
@@ -45,49 +52,25 @@ package stoletheshow.display
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage, false, 0, true);
 		}
 
-		private function onAddedToStage(event:Event):void
+		protected function onAddedToStage(event:Event):void
 		{
-			// like a MovieClip, play the sequence automatically.
-			gotoAndPlay(1);
+			_isStoped ? gotoAndStop(1) : gotoAndPlay(1);
 		}
 
-		private function onRemovedFromStage(event:Event):void
+		protected function onRemovedFromStage(event:Event):void
 		{
-			stop();
+			if (!_isStoped) stop();
 		}
 
-		private function onEnterFrame(event:Event = null):void
+		protected function onEnterFrame(event:Event = null):void
 		{
 			_index++;
 			_index = _index % _bitmapDatasLength;
-			// copypixels will decreas performance by ca. 5%			bitmap.bitmapData = _bitmapDatas[_index];
+			// Copypixels will decreas performance by ca. 5%.
+			bitmap.bitmapData = _bitmapDatas[_index];
 		}
 
-		public function draw(mc:MovieClip, transparent:Boolean = false, fillColor:int = 0x000000):void 
-		{
-			_bitmapDatas = [];
-			_bitmapDatasLength = mc.totalFrames;
-			var bmpd:BitmapData;
-			for (var i:int = 0;i < _bitmapDatasLength;i++) 
-			{
-				mc.gotoAndStop(i + 1);
-				try 
-				{
-					// Flash may throw an error if it can't keep up.
-					// If multiple BitmapAnimations use the same basis, pass the bitmap array in the constructor after processing the first.
-					bmpd = new BitmapData(mc.width, mc.height, transparent, fillColor);
-					bmpd.draw(mc);
-				}
-				catch (error:Error) 
-				{
-					//trace(error.message);
-					return;
-				}
-				_bitmapDatas[i] = bmpd;
-			}
-		}
-
-		public override function set filters(filters:Array):void 
+		override public function set filters(filters:Array):void 
 		{
 			_filters = filters;
 			
@@ -108,25 +91,50 @@ package stoletheshow.display
 					}
 					catch(error:Error)
 					{
-						//trace(error.message);
+						// Probably best to just keep going rather than throw an error.
+						trace(error.message);
 					}
 				}
 			}
 		}
 
-		public override function get filters():Array 
+		override public function get filters():Array 
 		{
 			return _filters;
 		}
-		
-		public override function set cacheAsBitmap(value:Boolean):void 
+
+		override public function set cacheAsBitmap(value:Boolean):void 
 		{
 			// Enabling cacheAsBitmap will result in a huge performance hit.
 		}
-		
-		public override function get cacheAsBitmap():Boolean 
+
+		override public function get cacheAsBitmap():Boolean 
 		{
 			return super.cacheAsBitmap;
+		}
+
+		public function draw(mc:MovieClip, transparent:Boolean = false, fillColor:int = 0x000000):void 
+		{
+			_bitmapDatas = [];
+			_bitmapDatasLength = mc.totalFrames;
+			var bmpd:BitmapData;
+			for (var i:int = 0;i < _bitmapDatasLength;i++) 
+			{
+				mc.gotoAndStop(i + 1);
+				try 
+				{
+					// Flash may throw an error if it can't keep up.
+					// If multiple BitmapAnimations use the same basis, pass the bitmap array in the constructor after processing the first.
+					bmpd = new BitmapData(mc.width, mc.height, transparent, fillColor);
+					bmpd.draw(mc);
+				}
+				catch (error:Error) 
+				{
+					trace(error.message);
+					return;
+				}
+				_bitmapDatas[i] = bmpd;
+			}
 		}
 
 		public function get bitmapSequence():Array 
@@ -136,13 +144,14 @@ package stoletheshow.display
 
 		public function gotoAndStop(frame:int):void 
 		{
-			if (_isPlaying) stop();
+			if (_isAnimating) stop();
 			bitmap.bitmapData = _bitmapDatas[frame - 1];
+			_index = frame;
 		}
 
 		public function gotoAndPlay(frame:int):void 
 		{
-			if (_isPlaying) stop();
+			if (_isAnimating) stop();
 			// -1 for array, -1 because it gets added again onEnterframe
 			_index = frame - 2;
 			play();
@@ -156,26 +165,27 @@ package stoletheshow.display
 		public function prevFrame():void 
 		{
 			_index--;
-			if (_index < 0) _index = _bitmapDatasLength -1;
+			if (_index < 0) _index = _bitmapDatasLength - 1;
 			bitmap.bitmapData = _bitmapDatas[_index];
 		}
 
 		public function play():void 
 		{
-			if (!_bitmapDatasLength || _isPlaying) return;
+			_isStoped = false;
+			if (!_bitmapDatasLength || _isAnimating) return;
 			if (!bitmap.bitmapData) bitmap.bitmapData = _bitmapDatas[0];
-			
-			_isPlaying = true;
+			_isAnimating = true;
 			addEventListener(Event.ENTER_FRAME, onEnterFrame, false, 0, true);
 		}
 
 		public function stop():void 
 		{
-			if (!_isPlaying) return;
-			_isPlaying = false;
+			_isStoped = true;
+			if (!_isAnimating) return;
+			_isAnimating = false;
 			removeEventListener(Event.ENTER_FRAME, onEnterFrame, false);
 		}
-		
+
 		public function dispose():void 
 		{
 			stop();
@@ -184,6 +194,26 @@ package stoletheshow.display
 			_bitmapDatas = null;
 			removeEventListener(Event.ADDED_TO_STAGE, onAddedToStage, false);
 			removeEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage, false);
+		}
+
+		public function get totalFrames():int
+		{
+			return _bitmapDatasLength;
+		}
+
+		public function get currentFrame():int
+		{
+			return _index;
+		}
+		
+		public function get isAnimating():Boolean
+		{
+			return _isAnimating;
+		}
+		
+		public function get isStoped():Boolean
+		{
+			return _isStoped;
 		}
 	}
 }
