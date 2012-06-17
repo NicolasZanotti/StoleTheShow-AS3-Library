@@ -85,9 +85,9 @@ package stoletheshow.mediators
 		protected function onStopClick(event:MouseEvent):void
 		{
 			feed.stop();
-			
+
 			if (_colorValue != null) events.remove(_colorValue, Event.ENTER_FRAME, onEnterFrame);
-			
+
 			state = States.idle;
 		}
 
@@ -108,7 +108,7 @@ package stoletheshow.mediators
 		}
 
 		/* ------------------------------------------------------------------------------- */
-		/*  Helper methods */
+		/*  Getters and setters */
 		/* ------------------------------------------------------------------------------- */
 		protected function set state(name:String):void
 		{
@@ -123,6 +123,11 @@ package stoletheshow.mediators
 					_startButton.visible = false;
 					break;
 			}
+		}
+
+		public function get color():Color
+		{
+			return _color;
 		}
 	}
 }
