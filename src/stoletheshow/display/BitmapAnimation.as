@@ -13,20 +13,13 @@ package stoletheshow.display
 	 * This class converts a MovieClip into a bitmap sequence. Optimal for decompressing Videos or complex vector animations.
 	 * 
 	 * Usage:
-	 * <pre>
+	 * <code>
 	 * 		var bitmapAnimation:BitmapAnimation = new BitmapAnimation();
 	 *		bitmapAnimation.draw(movieClip);
 	 *		addChild(bitmapAnimation);
-	 * </pre>
+	 * </code>
 	 * 
-	 * @author Nicolas Schudel
-	 * @langversion 3.0
-	 * @playerversion Flash 9
-	 * @param Array containing BitmapData
-	 * @version 20090612 Initial version named VideoClip. Created at Maxomedia, www.maxomedia.com
-	 * @version 20091105 Fixed a bug where the video is not updated when a bitmap sequence is passed in the constructor.
-	 * @version 20091115 Added dispose method.
-	 * @version 20100410 By Yu-Chung Chen. Added totalFrames and currentFrame getters. play() updates the _index so currentFrame works properly.
+	 * @author Nicolas Zanotti, Yu-Chung Chen
 	 */
 	public class BitmapAnimation extends Sprite
 	{
@@ -37,7 +30,10 @@ package stoletheshow.display
 						_isAnimating:Boolean = false,
 						_isStoped:Boolean = false;
 		public var		bitmap:Bitmap = new Bitmap();
-
+		
+		/**
+		 * @param Array containing BitmapData
+		 */
 		public function BitmapAnimation(bitmapDatas:Array = null)
 		{
 			if (bitmapDatas) 

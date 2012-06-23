@@ -1,46 +1,43 @@
-package stoletheshow.collections 
+package stoletheshow.collections
 {
-
 	/**
 	 * @author Nicolas Zanotti
 	 */
-	public class List 
+	public class List
 	{
-		protected var _a:Array = [];
+		protected const _container:Array = [];
 		protected var _index:int = -1;
 
-		public function List()
+		public function add(obj:Object):void
 		{
+			_container.push(obj);
 		}
 
-		public function add(obj:Object):void 
+		public function get next():Object
 		{
-			_a.push(obj);
+			_index = (_index + 1) % _container.length;
+			return _container[_index];
 		}
 
-		public function next():Object 
+		public function get previous():Object
 		{
-			_index++;
-			_index = _index % _a.length;	
-			return _a[_index];
+			_index = _index < 1 ? _container.length - 1 : _index - 1;
+			return _container[_index];
 		}
 
-		public function previous():Object
+		public function get hasNext():Boolean
 		{
-			if (_index == 0 || isNaN(_index)) 
-			{
-				_index = _a.length - 1;
-			}
-			else 
-			{
-				_index--;
-			}
-			return _a[_index];
+			return _index < _container.length - 1;
 		}
 
-		public function get length():uint 
+		public function skipToLast():void
 		{
-			return _a.length;
+			_index = _container.length;
+		}
+
+		public function get hasPrevious():Boolean
+		{
+			return _index > 0;
 		}
 	}
 }
