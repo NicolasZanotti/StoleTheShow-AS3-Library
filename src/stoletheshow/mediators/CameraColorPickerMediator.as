@@ -78,7 +78,7 @@ package stoletheshow.mediators
 
 			state = States.recording;
 
-			trace('_colorValue: ' + (_colorValue));
+			trace('_colorValue: ' + (_colorValue.text));
 			if (_colorValue != null) events.add(_colorValue, Event.ENTER_FRAME, onEnterFrame);
 		}
 

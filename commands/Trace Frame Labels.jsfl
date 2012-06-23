@@ -24,7 +24,7 @@ function getFrameLabels(timeLine) {
 				frameLabels.push(frame.name);
 		}
 	}
-	return frameLabels;
+	return frameLabels.reverse();
 }
 
 /**
