@@ -5,12 +5,12 @@ package stoletheshow.collections
 	 */
 	public class List
 	{
-		protected const _container:Array = [];
+		protected var _container:Array;
 		protected var _index:int = -1;
 
-		public function add(obj:Object):void
+		public function List(container:Array)
 		{
-			_container.push(obj);
+			_container = container;
 		}
 
 		public function get next():Object
@@ -30,14 +30,14 @@ package stoletheshow.collections
 			return _index < _container.length - 1;
 		}
 
-		public function skipToLast():void
-		{
-			_index = _container.length;
-		}
-
 		public function get hasPrevious():Boolean
 		{
 			return _index > 0;
+		}
+
+		public function skipToLast():void
+		{
+			_index = _container.length;
 		}
 	}
 }
