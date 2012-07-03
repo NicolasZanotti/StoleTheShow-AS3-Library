@@ -7,10 +7,24 @@
 	import flash.net.URLVariables;
 
 	/**
-	 * Holds string values that can be accessed using keys. Allows data to be loaded via XML.
+	 * Holds string values that can be accessed using keys. Allows data to be loaded and parsed from XML.
+	 * 
+	 * Using delimitUnderscore transforms any values using a dash "-" to an underscore.
+	 * This allows DisplayObjects to have the same variable name as the key for easy data-binding.
+	 * @see DictionaryBinder
+	 * 
+	 * @usage <code>
+	 *  // Directly with XML data
+	 * 	var dict:XMLStringDictionary = new XMLStringDictionary(<dict><item key="KEY-KEY_1">ENTRY1</item><item key="KEY-KEY_2">ENTRY2</item></dict>);
+	 * 	dict.getEntry("KEY-KEY_1");
+	 * 	
+	 * 	// Or from a service
+	 *	var dict:XMLStringDictionary = new XMLStringDictionary();
+	 *	dict.addEventListener(Event.CHANGE, function():void { dict.getEntry("KEY-KEY_1"); });
+	 *	dict.load("http://example.com/dict.xml");
+	 * </code>
 	 * 
 	 * @author Nicolas Zanotti, Elkana Aron
-	 * @playerversion Flash 9.0.28.0
 	 */
 	public class XMLStringDictionary extends StringDictionary implements Loadable
 	{
@@ -20,42 +34,48 @@
 		public var entryNodeName:String = "item";
 		public var keyAttributeName:String = "key";
 
-		private final function onError(e:IOErrorEvent):void
+		public function XMLStringDictionary(xml:XML, delimitUnderScore:Boolean = false)
 		{
-			throw new Error(e.text);
+			delimitUnderscoreOnClient = delimitUnderScore;
+			if (xml != null) data = parse(xml);
 		}
 
-		private final function onComplete(event:Event):void
+		public function load(serviceURI:String, languageID:int = 1):void
 		{
-			event.stopImmediatePropagation();
-			try
-			{
-				data = parseXMLtoObject(XML(_loader.data));
-			}
-			catch (e:TypeError)
-			{
-				throw new Error(e.message);
-			}
-			
-			// set state to loaded
-			_isLoaded = true;
-			dispatchEvent(new Event(Event.COMPLETE, true, true));
-			dispatchEvent(new Event(Event.CHANGE, true, true));
-			
-			// clean up
-			_loader.removeEventListener(Event.COMPLETE, onComplete);
-			_loader.removeEventListener(IOErrorEvent.IO_ERROR, onError);
-			_loader = null;
+			var request:URLRequest = new URLRequest(serviceURI);
+			var variables:URLVariables = new URLVariables();
+			variables.lang = languageID > 0 ? languageID : 1;
+			variables.delimitUnderscore = delimitUnderscoreOnServer ? 1 : 0;
+			request.data = variables;
+			loadRequest(request);
+		}
+
+		public function loadWithVariables(serviceURI:String, variables:URLVariables):void
+		{
+			var request:URLRequest = new URLRequest(serviceURI);
+			request.data = variables;
+			loadRequest(request);
+		}
+
+		/* ------------------------------------------------------------------------------- */
+		/*  Helper methods */
+		/* ------------------------------------------------------------------------------- */
+		protected function loadRequest(request:URLRequest):void
+		{
+			_loader = new URLLoader();
+			_loader.addEventListener(Event.COMPLETE, onComplete, false, 0, true);
+			_loader.addEventListener(IOErrorEvent.IO_ERROR, onError, false, 0, true);
+			_loader.load(request);
 		}
 
 		/**
 		 * Parse XML content to an associative array.
 		 * 
-		 * <node = key="KEY-KEY_1">value</node>
+		 * <item key="KEY-KEY_1">ENTRY1</item>
 		 * 
 		 * Because associative arrays don't allow minus signs, they must be converted to underscores.
 		 */
-		private final function parseXMLtoObject(xml:XML):Object
+		protected function parse(xml:XML):Object
 		{
 			var obj:Object = {};
 			var nodes:XMLList = xml.elements(entryNodeName);
@@ -73,17 +93,13 @@
 					obj[key] = n.toString();
 				}
 			}
+			
 			return obj;
 		}
 
-		private final function loadRequest(request:URLRequest):void
-		{
-			_loader = new URLLoader();
-			_loader.addEventListener(Event.COMPLETE, onComplete, false, 0, true);
-			_loader.addEventListener(IOErrorEvent.IO_ERROR, onError, false, 0, true);
-			_loader.load(request);
-		}
-
+		/* ------------------------------------------------------------------------------- */
+		/*  Getters and setters */
+		/* ------------------------------------------------------------------------------- */
 		public override function setEntry(key:String, value:String):void
 		{
 			if (key.search("-") != -1) super.setEntry(key.split("-").join("_"), value);
@@ -97,26 +113,40 @@
 			return super.getEntry(key);
 		}
 
-		public function load(serviceURI:String, languageID:int):void
-		{
-			var request:URLRequest = new URLRequest(serviceURI);
-			var variables:URLVariables = new URLVariables();
-			variables.lang = languageID > 0 ? languageID : 1;
-			variables.delimitUnderscore = delimitUnderscoreOnServer ? 1 : 0;
-			request.data = variables;
-			loadRequest(request);
-		}
-
-		public function loadWithVariables(serviceURI:String, variables:URLVariables):void
-		{
-			var request:URLRequest = new URLRequest(serviceURI);
-			request.data = variables;
-			loadRequest(request);
-		}
-
 		public override function get loaded():Boolean
 		{
 			return _isLoaded;
+		}
+
+		/* ------------------------------------------------------------------------------- */
+		/*  Event handlers */
+		/* ------------------------------------------------------------------------------- */
+		private final function onError(e:IOErrorEvent):void
+		{
+			throw new Error(e.text);
+		}
+
+		private final function onComplete(event:Event):void
+		{
+			event.stopImmediatePropagation();
+			try
+			{
+				data = parse(XML(_loader.data));
+			}
+			catch (e:TypeError)
+			{
+				throw new Error(e.message);
+			}
+
+			// set state to loaded
+			_isLoaded = true;
+			dispatchEvent(new Event(Event.COMPLETE, true, true));
+			dispatchEvent(new Event(Event.CHANGE, true, true));
+
+			// clean up
+			_loader.removeEventListener(Event.COMPLETE, onComplete);
+			_loader.removeEventListener(IOErrorEvent.IO_ERROR, onError);
+			_loader = null;
 		}
 	}
 }

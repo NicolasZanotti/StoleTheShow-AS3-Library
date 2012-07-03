@@ -1,6 +1,10 @@
 package
 {
+<<<<<<< HEAD
 	import utils.SumOfArraysTest;
+=======
+	import collections.XMLStringDictionaryTest;
+>>>>>>> Updated XMLStringDictionary
 	import collections.BooleanDictionaryTest;
 	import collections.ListTest;
 	import collections.StringDictionaryTest;
@@ -21,7 +25,11 @@ package
 		{
 			VisualTestEnvironmentBuilder.getInstance(this);
 			core.addListener(new TraceListener());
+<<<<<<< HEAD
 			core.run(BooleanDictionaryTest, ListTest, StringDictionaryTest, URLsTest, SumOfArraysTest);
+=======
+			core.run(BooleanDictionaryTest, ListTest, StringDictionaryTest, XMLStringDictionaryTest, URLsTest);
+>>>>>>> Updated XMLStringDictionary
 		}
 	}
 }
