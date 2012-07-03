@@ -24,8 +24,8 @@ package collections
 		{
 			dict.foo = true;
 			dict.bar = true;
-			Assert.assertEquals(dict.all(true), true);
-			Assert.assertEquals(dict.all(false), false);
+			Assert.assertTrue(dict.all(true));
+			Assert.assertFalse(dict.all(false));
 		}
 
 		[Test]
@@ -33,8 +33,8 @@ package collections
 		{
 			dict.foo = false;
 			dict.bar = false;
-			Assert.assertEquals(dict.all(false), true);
-			Assert.assertEquals(dict.all(true), false);
+			Assert.assertTrue(dict.all(false));
+			Assert.assertFalse(dict.all(true));
 		}
 
 		[Test]
@@ -42,8 +42,8 @@ package collections
 		{
 			dict.foo = false;
 			dict.bar = true;
-			Assert.assertEquals(dict.all(false), false);
-			Assert.assertEquals(dict.all(true), false);
+			Assert.assertFalse(dict.all(false));
+			Assert.assertFalse(dict.all(true));
 		}
 	}
 }

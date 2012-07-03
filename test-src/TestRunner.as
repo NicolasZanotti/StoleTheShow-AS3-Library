@@ -1,5 +1,6 @@
 package
 {
+	import utils.SumOfArraysTest;
 	import collections.BooleanDictionaryTest;
 	import collections.ListTest;
 	import collections.StringDictionaryTest;
@@ -20,7 +21,7 @@ package
 		{
 			VisualTestEnvironmentBuilder.getInstance(this);
 			core.addListener(new TraceListener());
-			core.run(BooleanDictionaryTest, ListTest, StringDictionaryTest, URLsTest);
+			core.run(BooleanDictionaryTest, ListTest, StringDictionaryTest, URLsTest, SumOfArraysTest);
 		}
 	}
 }

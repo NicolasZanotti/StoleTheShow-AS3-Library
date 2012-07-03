@@ -13,15 +13,10 @@ package collections
 	{
 		private var list:List;
 
-		[Before]
-		public function createDummyList():void
-		{
-			list = new List([1,2,3,4]);
-		}
-
 		[Test]
 		public function checkNext():void
 		{
+			list = new List([1, 2, 3, 4]);
 			Assert.assertEquals(list.next, 1);
 			Assert.assertEquals(list.next, 2);
 			Assert.assertEquals(list.next, 3);
@@ -32,6 +27,7 @@ package collections
 		[Test]
 		public function checkPrevious():void
 		{
+			list = new List([1, 2, 3, 4]);
 			Assert.assertEquals(list.previous, 4);
 			Assert.assertEquals(list.previous, 3);
 			Assert.assertEquals(list.previous, 2);
@@ -42,6 +38,7 @@ package collections
 		[Test]
 		public function checkIncrement():void
 		{
+			list = new List([1, 2, 3, 4]);
 			var i:uint = 1;
 
 			while (list.hasNext)
@@ -54,6 +51,7 @@ package collections
 		[Test]
 		public function checkDecrement():void
 		{
+			list = new List([1, 2, 3, 4]);
 			var i:uint = 4;
 
 			list.skipToLast();
@@ -63,6 +61,28 @@ package collections
 				Assert.assertEquals(list.previous, i);
 				i--;
 			}
+		}
+
+		[Test]
+		public function checkSingleEntryhasNext():void
+		{
+			list = new List([1]);
+			Assert.assertFalse(list.hasNext);
+		}
+
+		[Test]
+		public function checkSingleEntryhasPrev():void
+		{
+			list = new List([1]);
+			Assert.assertFalse(list.hasPrevious);
+		}
+
+		[Test]
+		public function checkSingleEntryNextPrev():void
+		{
+			list = new List([1]);
+			Assert.assertEquals(list.next, 1);
+			Assert.assertEquals(list.previous, 1);
 		}
 	}
 }
