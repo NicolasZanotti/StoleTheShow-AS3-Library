@@ -17,22 +17,22 @@ package collections
 		public function checkNext():void
 		{
 			list = new List([1, 2, 3, 4]);
-			Assert.assertEquals(list.next, 1);
-			Assert.assertEquals(list.next, 2);
-			Assert.assertEquals(list.next, 3);
-			Assert.assertEquals(list.next, 4);
-			Assert.assertEquals(list.next, 1);
+			Assert.assertEquals(1, list.next);
+			Assert.assertEquals(2, list.next);
+			Assert.assertEquals(3, list.next);
+			Assert.assertEquals(4, list.next);
+			Assert.assertEquals(1, list.next);
 		}
 
 		[Test]
 		public function checkPrevious():void
 		{
 			list = new List([1, 2, 3, 4]);
-			Assert.assertEquals(list.previous, 4);
-			Assert.assertEquals(list.previous, 3);
-			Assert.assertEquals(list.previous, 2);
-			Assert.assertEquals(list.previous, 1);
-			Assert.assertEquals(list.previous, 4);
+			Assert.assertEquals(4, list.previous);
+			Assert.assertEquals(3, list.previous);
+			Assert.assertEquals(2, list.previous);
+			Assert.assertEquals(1, list.previous);
+			Assert.assertEquals(4, list.previous);
 		}
 
 		[Test]
@@ -43,7 +43,7 @@ package collections
 
 			while (list.hasNext)
 			{
-				Assert.assertEquals(list.next, i);
+				Assert.assertEquals(i, list.next);
 				i++;
 			}
 		}
@@ -58,7 +58,7 @@ package collections
 
 			while (list.hasPrevious)
 			{
-				Assert.assertEquals(list.previous, i);
+				Assert.assertEquals(i, list.previous);
 				i--;
 			}
 		}

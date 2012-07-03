@@ -15,13 +15,13 @@
 	 * 
 	 * @usage <code>
 	 *  // Directly with XML data
-	 * 	var dict:XMLStringDictionary = new XMLStringDictionary(<dict><item key="KEY-KEY_1">ENTRY1</item><item key="KEY-KEY_2">ENTRY2</item></dict>);
+	 * 	var dict:XMLStringDictionary = new XMLStringDictionary(xml);
 	 * 	dict.getEntry("KEY-KEY_1");
 	 * 	
 	 * 	// Or from a service
-	 *	var dict:XMLStringDictionary = new XMLStringDictionary();
-	 *	dict.addEventListener(Event.CHANGE, function():void { dict.getEntry("KEY-KEY_1"); });
-	 *	dict.load("http://example.com/dict.xml");
+	 * 	var dict:XMLStringDictionary = new XMLStringDictionary();
+	 * 	dict.addEventListener(Event.CHANGE, onLoad);
+	 * 	dict.load("http://example.com/dict.xml");
 	 * </code>
 	 * 
 	 * @author Nicolas Zanotti, Elkana Aron
@@ -34,13 +34,13 @@
 		public var entryNodeName:String = "item";
 		public var keyAttributeName:String = "key";
 
-		public function XMLStringDictionary(xml:XML, delimitUnderScore:Boolean = false)
+		public function XMLStringDictionary(xml:XML = null, delimitUnderScore:Boolean = false)
 		{
 			delimitUnderscoreOnClient = delimitUnderScore;
-			if (xml != null) data = parse(xml);
+			if (xml != null) super(parse(xml));
 		}
 
-		public function load(serviceURI:String, languageID:int = 1):void
+		public function load(serviceURI:String, languageID:int):void
 		{
 			var request:URLRequest = new URLRequest(serviceURI);
 			var variables:URLVariables = new URLVariables();

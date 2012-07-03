@@ -1,21 +1,19 @@
 package
 {
-<<<<<<< HEAD
-	import utils.SumOfArraysTest;
-=======
-	import collections.XMLStringDictionaryTest;
->>>>>>> Updated XMLStringDictionary
 	import collections.BooleanDictionaryTest;
 	import collections.ListTest;
 	import collections.StringDictionaryTest;
-
-	import flash.display.Sprite;
+	import collections.XMLStringDictionaryTest;
 
 	import model.URLsTest;
+
+	import utils.SumOfArraysTest;
 
 	import org.flexunit.internals.TraceListener;
 	import org.flexunit.runner.FlexUnitCore;
 	import org.fluint.uiImpersonation.VisualTestEnvironmentBuilder;
+
+	import flash.display.Sprite;
 
 	public class TestRunner extends Sprite
 	{
@@ -25,11 +23,7 @@ package
 		{
 			VisualTestEnvironmentBuilder.getInstance(this);
 			core.addListener(new TraceListener());
-<<<<<<< HEAD
-			core.run(BooleanDictionaryTest, ListTest, StringDictionaryTest, URLsTest, SumOfArraysTest);
-=======
-			core.run(BooleanDictionaryTest, ListTest, StringDictionaryTest, XMLStringDictionaryTest, URLsTest);
->>>>>>> Updated XMLStringDictionary
+			core.run(BooleanDictionaryTest, ListTest, StringDictionaryTest, XMLStringDictionaryTest, URLsTest, SumOfArraysTest);
 		}
 	}
 }

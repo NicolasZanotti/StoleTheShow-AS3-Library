@@ -12,18 +12,30 @@ package collections
 	public class XMLStringDictionaryTest extends Sprite
 	{
 		private var dict:XMLStringDictionary;
-
-		[Before]
-		public function createDummyStringDictionary():void
+		
+		[Test]
+		public function checkEmptyConstructor():void
 		{
-			dict = new XMLStringDictionary(<dict><item key="KEY-KEY_1">ENTRY1</item><item key="KEY-KEY_2">ENTRY2</item></dict>);
+			dict = new XMLStringDictionary();
 		}
 
 		[Test]
 		public function checkEntries():void
 		{
-			Assert.assertEquals(dict.getEntry("KEY-KEY_1"), "ENTRY1");
-			Assert.assertEquals(dict.getEntry("KEY-KEY_2"), "ENTRY2");
+			var xml:XML = <dict><item key="KEY-KEY_1">ENTRY1</item><item key="KEY-KEY_2">ENTRY2</item></dict>;
+			dict = new XMLStringDictionary(xml);
+			Assert.assertEquals("ENTRY1", dict.getEntry("KEY-KEY_1"));
+			Assert.assertEquals("ENTRY2", dict.getEntry("KEY-KEY_2"));
+		}
+
+		[Test]
+		public function checkDelimitUnderscore():void
+		{
+			var xml:XML = <dict><item key="KEY-KEY_1">ENTRY1</item><item key="KEY-KEY_2">ENTRY2</item></dict>;
+			dict = new XMLStringDictionary(xml, true);
+
+			Assert.assertEquals("ENTRY1", dict.getEntry("KEY_KEY_1"));
+			Assert.assertEquals("ENTRY2", dict.getEntry("KEY_KEY_2"));
 		}
 	}
 }
