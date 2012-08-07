@@ -37,8 +37,8 @@ package
 		public function init():void
 		{
 			// Configure listeners
-			_ct.events.add(stage, Controller.INTERFACE_LOCK, onLock);
-			_ct.events.add(stage, Controller.INTERFACE_UNLOCK, onUnlock);
+			_ct.events.add(stage, "interface_lock", onLock);
+			_ct.events.add(stage, "interface_unlock", onUnlock);
 
 			// Restore state
 			onUnlock();

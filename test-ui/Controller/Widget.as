@@ -1,7 +1,5 @@
 package
 {
-	import flash.utils.setTimeout;
-
 	import stoletheshow.control.Controllable;
 	import stoletheshow.control.Controller;
 
@@ -32,7 +30,6 @@ package
 		{
 			// add listeners
 			ct.events.add(bt, MouseEvent.CLICK, onBtClick);
-			ct.events.add(btLock, MouseEvent.CLICK, onBtLockClick);
 			ct.events.add(this, Event.ENTER_FRAME, onStageEnterFrame);
 		}
 
@@ -53,18 +50,6 @@ package
 		private function onStageEnterFrame(event:Event):void
 		{
 			trace(_tickCounter++);
-		}
-
-		private function onBtLockClick(event:MouseEvent):void
-		{
-			ct.locked = true;
-
-			setTimeout(onUnlock, 2000);
-		}
-
-		private function onUnlock():void
-		{
-			ct.locked = false;
 		}
 	}
 }

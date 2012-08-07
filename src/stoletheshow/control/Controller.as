@@ -8,14 +8,15 @@ package stoletheshow.control
 	import flash.events.Event;
 
 	/**
-	 * Initializes/disposes the owner and its events when it is added/removed to the DisplayList.
+	 * Multi-purpose utility class for controlling a DisplayObject.
+	 * 
+	 * 1. Initializes/disposes the owner based on its inclusion in the display list.
+	 * 2. Keeps track of the owners events.
 	 * 
 	 * @author Nicolas Zanotti
 	 */
 	public class Controller
 	{
-		public static var INTERFACE_LOCK:String = "interface_lock";
-		public static var INTERFACE_UNLOCK:String = "interface_unlock";
 		protected var _owner:Controllable;
 		protected var _hasEvents:Boolean = false;
 		protected var _events:Events;
@@ -24,6 +25,7 @@ package stoletheshow.control
 		public function Controller(owner:Controllable)
 		{
 			_owner = owner;
+			
 			_owner.addEventListener(Event.ADDED_TO_STAGE, onAdded, false, 0, true);
 			_owner.addEventListener(Event.REMOVED_FROM_STAGE, onRemoved, false, 0, true);
 		}
@@ -31,17 +33,17 @@ package stoletheshow.control
 		/* ------------------------------------------------------------------------------- */
 		/*  Event Handlers */
 		/* ------------------------------------------------------------------------------- */
-		protected function onAdded(e:Event):void
+		protected function onAdded(event:Event):void
 		{
-			e.stopPropagation();
+			event.stopPropagation();
 
 			_owner.removeEventListener(Event.ADDED_TO_STAGE, onAdded, false);
 			_owner.init();
 		}
 
-		protected function onRemoved(e:Event):void
+		protected function onRemoved(event:Event):void
 		{
-			e.stopPropagation();
+			event.stopPropagation();
 
 			if (_hasEvents)
 			{
@@ -77,23 +79,6 @@ package stoletheshow.control
 			}
 
 			return _events;
-		}
-		
-		/**
-		 * Block interaction with the interface. For instance when a form is being submitted.
-		 */
-		public function set locked(isLocked:Boolean):void
-		{
-			_isLocked = isLocked;
-			
-			// TODO cover owner with clickEater
-			
-			_owner.root.stage.dispatchEvent(new Event(_isLocked ? INTERFACE_LOCK : INTERFACE_UNLOCK));
-		}
-
-		public function get locked():Boolean
-		{
-			return _isLocked;
 		}
 	}
 }
